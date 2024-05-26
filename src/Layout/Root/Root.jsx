@@ -1,16 +1,22 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../../Shared/Navbar/Navbar";
 import Footer from "../../Shared/Footer/Footer";
+import { Toaster } from "react-hot-toast";
 
 const Root = () => {
+  const location = useLocation();
+  const noHeaderFooter = location.pathname.includes("login");
   return (
     <>
-      <div className="flex justify-center ">
-        <Navbar></Navbar>{" "}
-      </div>
+      <Toaster></Toaster>
+      {noHeaderFooter || (
+        <div className="flex justify-center ">
+          <Navbar></Navbar>{" "}
+        </div>
+      )}
       <div className="px-5 lg:px-10 mx-auto container">
         <Outlet></Outlet>
-        <Footer></Footer>
+        {noHeaderFooter || <Footer></Footer>}
       </div>
     </>
   );
