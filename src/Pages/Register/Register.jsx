@@ -6,6 +6,7 @@ import { IoIosEyeOff } from "react-icons/io";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import useAuth from "../../CustomHooks/useAuth";
+import useAxiosPublic from "../../CustomHooks/useAxiosPublic";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,9 @@ const Register = () => {
     useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
+
+  const from = location?.state?.from?.pathname || "/";
 
   const handleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -30,14 +34,24 @@ const Register = () => {
 
     createUser(email, password)
       .then(() => {
+        //create entry for user in the database
+
         updateRegisterProfile(fullName, photoUrl)
           .then(() => {
+            const userInfo = {
+              name: fullName,
+              email: email,
+            };
+            axiosPublic
+              .post("/users", userInfo)
+              .then((res) => console.log(res.data));
+
             setReload(!reload);
           })
           .catch((err) => console.log(err));
 
         toast.success("Registration Successful.");
-        navigate(location?.state ? location.state : "/");
+        navigate(from, { replace: true });
       })
       .catch((err) => {
         setLoading(false);

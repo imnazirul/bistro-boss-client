@@ -1,12 +1,12 @@
 import axios from "axios";
 
 // eslint-disable-next-line react-refresh/only-export-components
-const AxiosPublic = axios.create({
+const axiosPublic = axios.create({
   baseURL: "http://localhost:5000/",
 });
 
 const useAxiosPublic = () => {
-  return AxiosPublic;
+  return axiosPublic;
 };
 
 export default useAxiosPublic;

@@ -15,12 +15,15 @@ import {
 import { useForm } from "react-hook-form";
 import useAuth from "../../CustomHooks/useAuth";
 import toast, { Toaster } from "react-hot-toast";
+import GoogleButton from "react-google-button";
+import useAxiosPublic from "../../CustomHooks/useAxiosPublic";
 
 const Login = () => {
   const captchaRef = useRef(null);
   const [showPassword, setShowPassword] = useState(false);
   const [btnDisabled, setBtnDisabled] = useState(true);
-  const { signIn, setLoading } = useAuth();
+  const { signIn, setLoading, signInWithGoogle } = useAuth();
+  const axiosPublic = useAxiosPublic();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -54,7 +57,14 @@ const Login = () => {
     const { email, password } = formData;
     console.log(formData);
     signIn(email, password)
-      .then(() => {
+      .then((res) => {
+        const userInfo = {
+          name: res.user?.displayName,
+          email: res.user?.email,
+        };
+        axiosPublic
+          .post("/users", userInfo)
+          .then((res) => console.log(res.data));
         toast.success("Sign In Successful");
         navigate(from, { replace: true });
       })
@@ -69,17 +79,25 @@ const Login = () => {
       });
   };
 
-  //   const handleGoogleLogin = () => {
-  //     signInWithGoogle()
-  //       .then(() => {
-  //         // toast.success("Sign In Successful");
-  //         navigate(location?.state ? location.state : "/");
-  //       })
-  //       .catch(() => {
-  //         setLoading(false);
-  //         // toast.error("An Unknown Error Occurred!");
-  //       });
-  //   };
+  const handleGoogleLogin = () => {
+    signInWithGoogle()
+      .then((res) => {
+        const userInfo = {
+          name: res.user?.displayName,
+          email: res.user?.email,
+        };
+        axiosPublic
+          .post("/users", userInfo)
+          .then((res) => console.log(res.data));
+
+        toast.success("Sign In Successful");
+        navigate(from, { replace: true });
+      })
+      .catch(() => {
+        setLoading(false);
+        toast.error("An Unknown Error Occurred!");
+      });
+  };
 
   return (
     <div className="mb-5 lg:mb-10 bg-base-300 rounded-xl bg-[url('https://i.ibb.co/XFwZHc4/brandi-redd-a-JTi-W00qqt-I-unsplash-2.jpg')] bg-cover bg-center bg-blend-overlay">
@@ -180,10 +198,10 @@ const Login = () => {
               </button>
             </div>
           </form>
-          {/* <div className="flex flex-col gap-4 justify-center  items-center mb-5">
+          <div className="flex flex-col gap-4 justify-center  items-center mb-5">
             {" "}
             <GoogleButton onClick={handleGoogleLogin} />
-          </div> */}
+          </div>
           <p className="text-center mb-4 text-lg">
             Don't have any account?{" "}
             <Link to="/register" className="link text-secondary-1 pb-2">

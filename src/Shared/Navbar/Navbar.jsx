@@ -1,9 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../CustomHooks/useAuth";
 import toast from "react-hot-toast";
+import { FaCartShopping } from "react-icons/fa6";
+import useCart from "../../CustomHooks/useCart";
 
 const Navbar = () => {
   const { user, logOut, loading } = useAuth();
+  const { cart } = useCart();
 
   const handleLogOut = () => {
     logOut()
@@ -34,7 +37,7 @@ const Navbar = () => {
       </li>
       {user && (
         <li>
-          <NavLink to="/dashboard">Dashboard</NavLink>
+          <NavLink to="/dashboard/admin">Dashboard</NavLink>
         </li>
       )}
       <li>
@@ -79,6 +82,14 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1 space-x-3">{navLinks}</ul>
         </div>
         <div className="navbar-end">
+          <Link to="/dashboard/cart">
+            <button className="flex gap-1">
+              <FaCartShopping className="text-2xl"></FaCartShopping>
+              <div className="bg-yellow-600 -mt-2 text-sm text-white font-medium px-2 rounded-3xl mr-3">
+                +{cart.length}
+              </div>
+            </button>
+          </Link>
           {loading ? (
             <span className="loading loading-spinner loading-md"></span>
           ) : user ? (

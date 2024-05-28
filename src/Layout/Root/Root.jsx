@@ -5,7 +5,9 @@ import { Toaster } from "react-hot-toast";
 
 const Root = () => {
   const location = useLocation();
-  const noHeaderFooter = location.pathname.includes("login");
+  const noHeaderFooter =
+    location.pathname.includes("login") ||
+    location.pathname.includes("register");
   return (
     <>
       <Toaster></Toaster>

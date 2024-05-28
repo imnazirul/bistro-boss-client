@@ -13,7 +13,7 @@ const Order = () => {
   const initialIndex = categories.indexOf(category);
   const [index, setIndex] = useState(initialIndex);
 
-  const menu = useMenu();
+  const { menu } = useMenu();
   const dessert = menu.filter((item) => item.category === "dessert");
   const soup = menu.filter((item) => item.category === "soup");
   const salad = menu.filter((item) => item.category === "salad");
